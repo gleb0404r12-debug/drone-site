@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>БПЛА мониторинга и охраны сельскохозяйственных территорий</title>
+    <style>
+        /* Базовые настройки и цвета */
+        :root {
+            --black: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --gray: #2a2a2a;
+            --light-gray: #8a8a8a;
+            --white: #f4f4f4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Шапка сайта */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, var(--white), var(--light-gray));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--light-gray);
+        }
+
+        /* Главный экран (Hero) */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 120px 10% 60px 10%;
+            background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 50%, var(--gray) 100%);
+            gap: 40px;
+        }
+
+        .hero-text {
+            flex: 1;
+            max-width: 650px;
+        }
+
+        .hero h1 {
+            font-size: clamp(24px, 3.5vw, 42px); 
+            line-height: 1.2;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #ffffff 0%, #888888 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            word-wrap: break-word;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--light-gray);
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 12px 35px;
+            background: var(--gray);
+            color: var(--white);
+            text-decoration: none;
+            border: 1px solid var(--light-gray);
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 600px;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            mix-blend-mode: screen; 
+            filter: contrast(110%);
+        }
+
+        /* Секции */
+        section {
+            padding: 80px 10%;
+            background: var(--dark-gray);
+        }
+
+        section:nth-child(even) {
+            background: var(--black);
+        }
+
+        .section-title {
+            font-size: clamp(24px, 4vw, 36px);
+            margin-bottom: 40px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--light-gray);
+            margin: 15px auto 0;
+        }
+
+        /* Сетки */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--gray);
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.05);
+            border-color: var(--light-gray);
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .card p {
+            color: var(--light-gray);
+            font-size: 15px;
+            text-align: center;
+        }
+
+        /* Контейнер для фото плат */
+        .card-img-container {
+            width: 100%;
+            height: 200px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 15px;
+        }
+
+        .card-img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-img-container img {
+            transform: scale(1.1);
+        }
+
+        /* Характеристики */
+        .specs {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: var(--black);
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--gray);
+        }
+
+        .spec-item {
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .spec-item h4 {
+            font-size: clamp(28px, 4vw, 40px);
+            color: var(--white);
+            margin-bottom: 5px;
+        }
+
+        .spec-item p {
+            color: var(--light-gray);
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        /* Подвал */
+        footer {
+            background: var(--black);
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid var(--gray);
+            color: var(--light-gray);
+        }
+
+        /* ========================================= */
+        /* АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 10px;
+            }
+
+            nav {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav a {
+                font-size: 13px;
+            }
+
+            .hero {
+                flex-direction: column;
+                padding: 140px 20px 40px 20px;
+                text-align: center;
+            }
+
+            .hero-text {
+                max-width: 100%;
+            }
+
+            .hero-image {
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            section {
+                padding: 60px 20px;
+            }
+
+            .specs {
+                padding: 20px;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">БПЛА Мониторинг</div>
+        <nav>
+            <a href="#about">О проекте</a>
+            <a href="#tech">Электроника</a>
+            <a href="#specs">Характеристики</a>
+            <a href="#future">Развитие</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="about">
+        <div class="hero-text">
+            <h1>Беспилотный летательный аппарат мониторинга и охраны сельскохозяйственных территорий</h1>
+            <p>Аппарат типа «летающее крыло» для учёта поголовья скота, охраны периметра и обзора угодий.</p>
+            <a href="#tech" class="btn">Комплектующие</a>
+        </div>
+        <div class="hero-image">
+            <!-- Новая ссылка на дрон -->
+            <img src="https://analyticstats.ru/public-host/media/HNraHKQs" alt="БПЛА мониторинга">
+        </div>
+    </section>
+
+    <section id="tech">
+        <h2 class="section-title">Бортовая электроника</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-img-container">
+                    <!-- Новая ссылка на плату -->
+                    <img src="https://analyticstats.ru/public-host/media/1xTwij4C" alt="SpeedyBee F405 WING Mini">
+                </div>
+                <h3>SpeedyBee F405 WING Mini</h3>
+                <p>Сердце комплекса. Полётный контроллер с прошивкой INAV обеспечивает идеальную стабилизацию «летающего крыла» по трём осям.</p>
+            </div>
+            <div class="card">
+                <div class="card-img-container">
+                    <!-- Новая ссылка на приемник -->
+                    <img src="https://analyticstats.ru/public-host/media/DsLoqBAs" alt="Приемник ELRS">
+                </div>
+                <h3>Приёмник ExpressLRS</h3>
+                <p>Обеспечивает помехоустойчивую связь с пультом управления на дальности до 30 км, гарантируя стабильный приём команд.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="specs">
+        <h2 class="section-title">Технические характеристики</h2>
+        <div class="specs">
+            <div class="spec-item">
+                <h4>15 000 ₽</h4>
+                <p>Себестоимость</p>
+            </div>
+            <div class="spec-item">
+                <h4>2.5 ч</h4>
+                <p>Время полёта</p>
+            </div>
+            <div class="spec-item">
+                <h4>30 км</h4>
+                <p>Дальность</p>
+            </div>
+            <div class="spec-item">
+                <h4>С руки</h4>
+                <p>Запуск</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="future">
+        <h2 class="section-title">Векторы развития</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Тепловизор</h3>
+                <p>Установка тепловизионного модуля позволит выполнять ночное патрулирование и легко находить животных в густой растительности.</p>
+            </div>
+            <div class="card">
+                <h3>GNSS-приёмник</h3>
+                <p>Добавление GPS/ГЛОНАСС модуля даст возможность строить точные 3D-карты рельефа для автоматической прокладки маршрутов.</p>
+            </div>
+            <div class="card">
+                <h3>Масштабирование</h3>
+                <p>Благодаря низкой стоимости, комплекс можно использовать в малых хозяйствах и объединять дроны в единую сеть.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Беспилотный летательный аппарат мониторинга и охраны сельскохозяйственных территорий.</p>
+    </footer>
+
+</body>
+</html>
